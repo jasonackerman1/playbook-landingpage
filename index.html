@@ -21,30 +21,84 @@
     color: #fff;
   }
 
-  .pb-header {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 56px 24px 40px;
-    text-align: center;
+  .pb-topbar {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding: 20px 32px;
+    border-bottom: 1px solid hsl(228, 20%, 24%);
+    background: hsl(228, 22%, 12%);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
   }
-  .pb-kma-logo {
-    height: 40px;
-    width: auto;
-    display: block;
-    margin: 0 auto 32px;
+  .pb-topbar > *:not(.pb-aurora-wrap) {
+    position: relative;
+    z-index: 1;
   }
-  .pb-header h1 {
-    font-size: clamp(1.4rem, 4.4vw, 3rem);
-    font-weight: 800;
-    margin: 0 0 14px;
-    letter-spacing: -0.02em;
+  .pb-aurora-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .pb-aurora-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    animation: pb-aurora-drift linear infinite alternate;
+  }
+  .pb-aurora-1 { width: 400px; height: 210px; background: rgba(74,124,247,0.4);  top: -120px; left: 1%;   animation-duration: 11s; }
+  .pb-aurora-2 { width: 300px; height: 175px; background: rgba(139,92,246,0.32); top: -85px;  left: 40%;  animation-duration: 8.5s; animation-delay: -2.5s; }
+  .pb-aurora-3 { width: 270px; height: 160px; background: rgba(20,184,166,0.27); top: -100px; right: 3%;  animation-duration: 14s; animation-delay: -5.5s; }
+  @keyframes pb-aurora-drift {
+    0%   { transform: translate(0,0) scale(1); }
+    100% { transform: translate(30px,22px) scale(1.22); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pb-aurora-orb { animation: none; }
+  }
+  .pb-topbar-left {
+    text-align: left;
+  }
+  .pb-topbar-left h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.3px;
     white-space: nowrap;
   }
-  .pb-header p {
+  .pb-topbar-center {
+    display: flex;
+    justify-content: center;
+  }
+  .pb-kma-logo {
+    height: 38px;
+    width: auto;
+    display: block;
+  }
+  .pb-topbar-right {
+    min-width: 1px;
+  }
+
+  .pb-intro {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 40px;
+    text-align: center;
+  }
+  .pb-intro p {
     font-size: 1.05rem;
     color: hsl(215, 25%, 78%);
     max-width: 100%;
     margin: 0 auto;
+  }
+
+  @media (max-width: 700px) {
+    .pb-topbar { grid-template-columns: 1fr auto; }
+    .pb-topbar-right { display: none; }
   }
 
   .pb-grid {
@@ -215,11 +269,24 @@
 </head>
 <body>
 
-  <header class="pb-header">
-    <img src="https://jasonackerman1.github.io/playbook-dashboard/KMA-wht.svg" class="pb-kma-logo" alt="KM Academy">
-    <h1>Sales Enablement Digital Playbooks</h1>
-    <p>Playbooks are your field guides for every market: the products, positioning, and prospecting tools built for the industry you sell into. Pick one below to open its full toolkit in a new tab.</p>
+  <header class="pb-topbar">
+    <div class="pb-aurora-wrap">
+      <div class="pb-aurora-orb pb-aurora-1"></div>
+      <div class="pb-aurora-orb pb-aurora-2"></div>
+      <div class="pb-aurora-orb pb-aurora-3"></div>
+    </div>
+    <div class="pb-topbar-left">
+      <h1>Sales Enablement Digital Playbooks</h1>
+    </div>
+    <div class="pb-topbar-center">
+      <img src="https://jasonackerman1.github.io/playbook-dashboard/KMA-wht.svg" class="pb-kma-logo" alt="KM Academy">
+    </div>
+    <div class="pb-topbar-right"></div>
   </header>
+
+  <div class="pb-intro">
+    <p>Playbooks are your field guides for every market: the products, positioning, and prospecting tools built for the industry you sell into. Pick one below to open its full toolkit in a new tab.</p>
+  </div>
 
   <main class="pb-grid">
 
