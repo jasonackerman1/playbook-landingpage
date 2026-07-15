@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Playbooks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: hsl(220, 38%, 11%);
+    background-image:
+      radial-gradient(900px circle at 8% 0%, hsl(218, 55%, 22%) 0%, transparent 55%),
+      radial-gradient(1100px circle at 95% 100%, hsl(218, 55%, 20%) 0%, transparent 55%);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #fff;
+  }
+
+  .pb-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 56px 24px 40px;
+    text-align: center;
+  }
+  .pb-kma-logo {
+    height: 40px;
+    width: auto;
+    display: block;
+    margin: 0 auto 32px;
+  }
+  .pb-header h1 {
+    font-size: clamp(1.4rem, 4.4vw, 3rem);
+    font-weight: 800;
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .pb-header p {
+    font-size: 1.05rem;
+    color: hsl(215, 25%, 78%);
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .pb-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+  }
+
+  .pb-card,
+  .pb-card:visited,
+  .pb-card:hover,
+  .pb-card:active {
+    --accent: 220 60% 30%;
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .pb-card:hover,
+  .pb-card:focus-visible {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 26px 50px -10px hsl(var(--accent) / 0.55);
+  }
+
+  .pb-card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.0);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .pb-card:hover .pb-card-bg,
+  .pb-card:focus-visible .pb-card-bg {
+    transform: scale(1.09);
+  }
+
+  .pb-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+  }
+
+  .pb-card-text-scrim {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 68%;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.95) 100%);
+  }
+
+  .pb-card-top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: hsl(var(--accent));
+    z-index: 2;
+  }
+
+  .pb-card-content {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 26px 24px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
+  .pb-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1.5px solid hsl(var(--accent) / 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 1rem;
+    backdrop-filter: blur(4px);
+    background: hsl(var(--accent) / 0.25);
+    color: #fff;
+  }
+  .pb-card-eyebrow {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: hsl(var(--accent));
+    margin-bottom: 6px;
+  }
+  .pb-card h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .pb-card p {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    opacity: 0.9;
+    margin: 0 0 16px;
+    max-width: 92%;
+  }
+  .pb-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .pb-card-cta i {
+    font-size: 0.8rem;
+    color: hsl(var(--accent));
+    transition: transform 0.25s ease;
+  }
+  .pb-card:hover .pb-card-cta i,
+  .pb-card:focus-visible .pb-card-cta i {
+    transform: translateX(6px);
+  }
+
+  .pb-footer {
+    text-align: center;
+    padding: 0 24px 60px;
+    color: hsl(215, 20%, 55%);
+    font-size: 0.8rem;
+  }
+
+  .pb-feedback-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 50px;
+    background: hsl(210, 90%, 56%);
+    color: #fff;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .pb-feedback-btn:hover {
+    background: hsl(210, 90%, 62%);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.45);
+  }
+  .pb-feedback-btn i { font-size: 0.9rem; }
+
+  @media (max-width: 640px) {
+    .pb-feedback-btn { bottom: 18px; right: 18px; padding: 12px 18px; font-size: 0.82rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pb-card, .pb-card-bg, .pb-card-cta i { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="pb-header">
+    <img src="https://jasonackerman1.github.io/playbook-dashboard/KMA-wht.svg" class="pb-kma-logo" alt="KM Academy">
+    <h1>Sales Enablement Digital Playbooks</h1>
+    <p>Playbooks are your field guides for every market — the products, positioning, and prospecting tools built for the industry you sell into. Pick one below to open its full toolkit in a new tab.</p>
+  </header>
+
+  <main class="pb-grid">
+
+    <a class="pb-card" style="--accent: 234 75% 68%;" href="https://wapps.mykonicaminolta.com/sc/playbooks/Legal_Vertical_PlayBook/" target="_blank" rel="noopener noreferrer">
+      <div class="pb-card-top-bar"></div>
+      <div class="pb-card-bg" style="background-image:url('https://raw.githubusercontent.com/BradleyAPierce/Legal_Images_Copy/main/AdobeStock_206742088.jpeg');"></div>
+      <div class="pb-card-overlay"></div>
+      <div class="pb-card-text-scrim"></div>
+      <div class="pb-card-content">
+        <div class="pb-card-icon"><i class="fas fa-scale-balanced"></i></div>
+        <span class="pb-card-eyebrow">Legal</span>
+        <h3>Legal Playbook</h3>
+        <p>Contracts, IP protection, and compliance-driven sales plays.</p>
+        <span class="pb-card-cta">Enter Playbook <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+    <a class="pb-card" style="--accent: 174 65% 50%;" href="https://wapps.mykonicaminolta.com/sc/playbooks/Healthcare_Vertical_PlayBook/Healthcare_Playbook/" target="_blank" rel="noopener noreferrer">
+      <div class="pb-card-top-bar"></div>
+      <div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/Healthcare_Playbook_Images/HealthcareHomeReduced.jpg');"></div>
+      <div class="pb-card-overlay"></div>
+      <div class="pb-card-text-scrim"></div>
+      <div class="pb-card-content">
+        <div class="pb-card-icon"><i class="fas fa-heart-pulse"></i></div>
+        <span class="pb-card-eyebrow">Healthcare</span>
+        <h3>Healthcare Playbook</h3>
+        <p>HIPAA, interoperability, and patient experience solutions.</p>
+        <span class="pb-card-cta">Enter Playbook <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+    <a class="pb-card" style="--accent: 142 55% 48%;" href="https://wapps.mykonicaminolta.com/sc/playbooks/public_sector_playbook/" target="_blank" rel="noopener noreferrer">
+      <div class="pb-card-top-bar"></div>
+      <div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/Public_Sector_Playbook_Images/publicSectorHero3.jpg');"></div>
+      <div class="pb-card-overlay"></div>
+      <div class="pb-card-text-scrim"></div>
+      <div class="pb-card-content">
+        <div class="pb-card-icon"><i class="fas fa-landmark"></i></div>
+        <span class="pb-card-eyebrow">Public Sector</span>
+        <h3>Public Sector Playbook</h3>
+        <p>Government, education, and public safety workflows.</p>
+        <span class="pb-card-cta">Enter Playbook <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+    <a class="pb-card" style="--accent: 20 90% 58%;" href="https://wapps.mykonicaminolta.com/sc/playbooks/accelerate_sales_playbook/" target="_blank" rel="noopener noreferrer">
+      <div class="pb-card-top-bar"></div>
+      <div class="pb-card-bg" style="background-image:url('https://jasonackerman1.github.io/accelerate_sales_playbook/img/accelerateHero.jpg');"></div>
+      <div class="pb-card-overlay"></div>
+      <div class="pb-card-text-scrim"></div>
+      <div class="pb-card-content">
+        <div class="pb-card-icon"><i class="fas fa-rocket"></i></div>
+        <span class="pb-card-eyebrow">New Hire Onboarding</span>
+        <h3>Accelerate Playbook</h3>
+        <p>The 35-day ramp for new reps — courses, coaching, and tools.</p>
+        <span class="pb-card-cta">Enter Playbook <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+    <a class="pb-card" style="--accent: 205 85% 60%;" href="https://wapps.mykonicaminolta.com/sc/playbooks/salesforce_playbook/" target="_blank" rel="noopener noreferrer">
+      <div class="pb-card-top-bar"></div>
+      <div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/Salesforce_Playbook_Images/AdobeStock_258669413.jpeg');"></div>
+      <div class="pb-card-overlay"></div>
+      <div class="pb-card-text-scrim"></div>
+      <div class="pb-card-content">
+        <div class="pb-card-icon"><i class="fas fa-cloud"></i></div>
+        <span class="pb-card-eyebrow">CRM &amp; Sales Ops</span>
+        <h3>Salesforce Playbook</h3>
+        <p>Step-by-step guides for working every deal in Salesforce.</p>
+        <span class="pb-card-cta">Enter Playbook <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+    <a class="pb-card" style="--accent: 272 60% 66%;" href="https://wapps.mykonicaminolta.com/sc/playbooks/GC_IP_Sales_Playbook/GC_IP_Playbook/" target="_blank" rel="noopener noreferrer">
+      <div class="pb-card-top-bar"></div>
+      <div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/GCIP_Playbook_Images/Banner_Home_Page.jpg');"></div>
+      <div class="pb-card-overlay"></div>
+      <div class="pb-card-text-scrim"></div>
+      <div class="pb-card-content">
+        <div class="pb-card-icon"><i class="fas fa-print"></i></div>
+        <span class="pb-card-eyebrow">Graphic Communications &amp; IP</span>
+        <h3>GC/IP Playbook</h3>
+        <p>Production print, packaging, and industrial sales resources.</p>
+        <span class="pb-card-cta">Enter Playbook <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </a>
+
+  </main>
+
+  <footer class="pb-footer">
+    Konica Minolta Business Solutions U.S.A.
+  </footer>
+
+  <!-- TODO: swap in the real Microsoft Forms URL once it's created -->
+  <a class="pb-feedback-btn" href="https://forms.office.com/r/PLACEHOLDER" target="_blank" rel="noopener noreferrer">
+    <i class="fas fa-comment-dots"></i> Feedback &amp; Requests
+  </a>
+
+</body>
+</html>
