@@ -3,6 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+/* French loading screen (same look and behavior as the Accelerate playbook's js/frloading.js).
+ * Covers the page while Google Translate turns it into French, then shows it once the
+ * translation has landed. Only for Canadian employees who prefer French.
+ * This page learns that from the UserInfo API (script at the bottom of the page), so:
+ *  - Return visit: the last answer is remembered (km-landing-french), and the cover goes up
+ *    before anything draws.
+ *  - First visit: the cover goes up as soon as the API says French.
+ * Safety net: the page always shows after 12 seconds, no matter what. */
+(function () {
+  var MAX_WAIT_MS = 12000;
+  var html = document.documentElement;
+  var css =
+    'html.km-fr-loading::before{content:"Chargement de la version fran\\00E7 aise\\2026\\A Loading French version\\2026";' +
+    'white-space:pre;position:fixed;inset:0;z-index:2147483646;background:#fff;display:flex;align-items:center;' +
+    'justify-content:center;text-align:center;padding-top:110px;font:600 20px/1.6 Roboto,"Helvetica Neue",Arial,sans-serif;color:#2764B0;}' +
+    'html.km-fr-loading::after{content:"";position:fixed;z-index:2147483647;top:calc(50% - 60px);left:calc(50% - 24px);' +
+    'width:48px;height:48px;border-radius:50%;border:4px solid rgba(39,100,176,.18);border-top-color:#2764B0;' +
+    'animation:kmFrSpin .8s linear infinite;}' +
+    '@keyframes kmFrSpin{to{transform:rotate(360deg)}}' +
+    'html.km-fr-loading body{overflow:hidden;}';
+  var style = document.createElement('style');
+  style.appendChild(document.createTextNode(css));
+  (document.head || html).appendChild(style);
+
+  var covered = false, watching = false;
+
+  function reveal() {
+    covered = false;
+    html.classList.remove('km-fr-loading');
+  }
+
+  // Shows the page once Google has marked it translated AND the heading's text changed.
+  function watchForTranslation() {
+    if (watching) return;
+    watching = true;
+    var probe = document.querySelector('h1');
+    var original = probe ? probe.textContent.trim() : null;
+    var markedAt = null;
+    var poll = setInterval(function () {
+      if (!covered) { clearInterval(poll); return; }
+      var marked = html.classList.contains('translated-ltr') || html.classList.contains('translated-rtl');
+      if (!marked) return;
+      if (markedAt === null) markedAt = Date.now();
+      var changed = !probe || probe.textContent.trim() !== original;
+      if ((changed && Date.now() - markedAt > 300) || Date.now() - markedAt > 1500) {
+        clearInterval(poll);
+        reveal();
+      }
+    }, 100);
+  }
+
+  function cover() {
+    if (covered) return;
+    covered = true;
+    html.classList.add('km-fr-loading');
+    setTimeout(reveal, MAX_WAIT_MS);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchForTranslation);
+    else watchForTranslation();
+  }
+
+  window.KMFrLoading = { cover: cover, reveal: reveal };
+
+  // Cover right away if we already know (return visit, or ?mock=ca-fr preview).
+  var mock = /[?&]mock=([a-z-]+)/.exec(window.location.search);
+  var knownFrench = false;
+  if (mock) knownFrench = mock[1] === 'ca-fr';
+  else { try { knownFrench = localStorage.getItem('km-landing-french') === '1'; } catch (e) {} }
+  if (knownFrench) cover();
+})();
+</script>
 <title>Digital Playbooks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +108,22 @@
     padding: 56px 24px 40px;
     text-align: center;
   }
+  .pb-welcome-row {
+    max-width: 1200px;
+    margin: -16px auto 12px;   /* sits in the gap between the intro text and the cards */
+    padding: 0 24px;
+    text-align: right;
+  }
+  .pb-welcome {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--blue);
+  }
+  .pb-welcome[hidden] { display: none; }
+  .pb-welcome-name { font-weight: 800; margin-left: 0.3em; } /* space set here, since Google Translate drops a typed space */
+  /* Google Translate's hidden widget (only loaded for Canadian French employees) */
+  #google_translate_element { display: none; }
+
   .pb-intro h1 {
     font-size: 32px;
     font-weight: 800;
@@ -230,6 +317,12 @@
     <p>A playbook is your one-stop resource for a specific market: real product positioning, prospecting tools, and deal-ready guidance built for the industry you sell into. Use it to prep for a call, ramp up fast, or find an answer the moment you need it. Pick your market below to open its playbook in a new tab.</p>
   </div>
 
+  <!-- Welcome line, right-aligned above the third card. Filled from IT's UserInfo API
+       on the KM server; stays hidden anywhere else. -->
+  <div class="pb-welcome-row">
+    <span class="pb-welcome" data-km-welcome hidden>Welcome,<span class="pb-welcome-name notranslate" data-km-welcome-name></span></span>
+  </div>
+
   <main class="pb-grid">
 
     <a class="pb-card" style="--accent: #06C;" href="https://wapps.mykonicaminolta.com/sc/playbooks/accelerate_sales_playbook/" target="_blank" rel="noopener noreferrer">
@@ -238,7 +331,7 @@
       <div class="pb-card-content">
         <div class="pb-card-icon"><i class="fas fa-rocket"></i></div>
         <span class="pb-card-eyebrow">New Hire Onboarding</span>
-        <h3>Accelerate Playbook</h3>
+        <h3><span class="notranslate">Accelerate</span> Playbook</h3>
         <p>A guided path through Sales Workflow, Core Portfolio, and Prospecting Skills, plus manager coaching tools to ramp new reps in their first 35 days.</p>
         <span class="pb-card-cta">Start Your Ramp-Up <i class="fas fa-arrow-right"></i></span>
       </div>
@@ -316,6 +409,113 @@
     <i class="fas fa-comment-dots"></i> Feedback &amp; Requests
   </a>
   -->
+
+  <!-- ===================== Welcome line + French (UserInfo API) =====================
+       Reads the logged-in employee from IT's UserInfo API (same API as the Accelerate
+       playbook's js/userinfo.js, trimmed down for this page):
+         - Everyone: "Welcome, First Last" in the header.
+         - Canadian employee (company code BCA-C) whose preferred language is French:
+           the page is translated to French (Canada) with Google Translate.
+         - Everyone else (US, Canadian English, dealers, API not answering): English.
+       Only works on the KM server, under /sc/playbooks. On GitHub Pages or a local
+       preview the API isn't there and nothing happens.
+       Preview without the server: add ?mock=us, ?mock=ca-en or ?mock=ca-fr to the address.
+       Switches: set WELCOME or FRENCH to false to turn that part off. -->
+  <div id="google_translate_element"></div>
+  <script>
+  (function () {
+    var WELCOME = true;
+    var FRENCH = true;
+    var API_URL = '/sc/UserInfo/';
+    var CACHE_KEY = 'km-userinfo';   // same key Accelerate uses, so one lookup per visit
+
+    var MOCKS = {
+      'us':    { firstName: 'Jane',  lastName: 'Doe',     companyCode: 'KMBS',  preferredLanguage: 'en' },
+      'ca-en': { firstName: 'Liam',  lastName: 'Tremblay', companyCode: 'BCA-C', preferredLanguage: 'en' },
+      'ca-fr': { firstName: 'Julie', lastName: 'Gagnon',  companyCode: 'BCA-C', preferredLanguage: 'fr' }
+    };
+
+    function getUser() {
+      var m = /[?&]mock=([a-z-]+)/.exec(window.location.search);
+      if (m && MOCKS[m[1]]) return Promise.resolve(MOCKS[m[1]]);
+      try {
+        var cached = sessionStorage.getItem(CACHE_KEY);
+        if (cached) return Promise.resolve(JSON.parse(cached));
+      } catch (e) {}
+      return fetch(API_URL, { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          // A login redirect comes back as 200 HTML, so check the content type too.
+          if (!r.ok || (r.headers.get('Content-Type') || '').indexOf('application/json') === -1) {
+            throw new Error('UserInfo unavailable');
+          }
+          return r.json();
+        })
+        .then(function (user) {
+          try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(user)); } catch (e) {}
+          return user;
+        });
+    }
+
+    function showWelcome(user) {
+      var first = String(user.firstName || '').trim();
+      var last = String(user.lastName || '').trim();
+      var name = (first + ' ' + last).trim() || String(user.cn || '').trim();
+      if (!name) return;
+      var box = document.querySelector('[data-km-welcome]');
+      if (!box) return;
+      box.querySelector('[data-km-welcome-name]').textContent = name;
+      box.hidden = false;
+    }
+
+    function wantsFrench(user) {
+      var code = String(user.companyCode || '').trim();
+      var lang = String(user.preferredLanguage || '').trim().toLowerCase();
+      return code === 'BCA-C' && lang.indexOf('fr') === 0;
+    }
+
+    function translateToFrench() {
+      window.googleTranslateElementInit = function () {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'fr-CA',   // French (Canada), not standard French
+          autoDisplay: false
+        }, 'google_translate_element');
+        // Google can ignore the first switch if its widget isn't ready yet,
+        // so keep re-selecting French until the page is actually translated.
+        var html = document.documentElement, lastTry = 0;
+        var poll = setInterval(function () {
+          if (html.classList.contains('translated-ltr')) { clearInterval(poll); return; }
+          var sel = document.querySelector('.goog-te-combo');
+          if (sel && Date.now() - lastTry > 1000) {
+            lastTry = Date.now();
+            sel.value = 'fr-CA';
+            sel.dispatchEvent(new Event('change'));
+          }
+        }, 100);
+        setTimeout(function () { clearInterval(poll); }, 12000);
+      };
+      var s = document.createElement('script');
+      s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      document.body.appendChild(s);
+    }
+
+    var loader = window.KMFrLoading;   // French loading screen, set up in <head>
+    getUser().then(function (user) {
+      if (WELCOME) showWelcome(user);
+      var french = FRENCH && wantsFrench(user);
+      try { localStorage.setItem('km-landing-french', french ? '1' : '0'); } catch (e) {}
+      if (french) {
+        if (loader) loader.cover();   // hide the page until Google finishes translating
+        translateToFrench();
+      } else if (loader) {
+        loader.reveal();              // remembered as French last time, but not anymore
+      }
+    }).catch(function () {
+      // Not on the KM server or not logged in: stay in English, never leave the cover up.
+      if (loader) loader.reveal();
+    });
+  })();
+  </script>
 
 </body>
 </html>
