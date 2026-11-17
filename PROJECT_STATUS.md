@@ -21,6 +21,7 @@ One landing page ("Sales Enablement Resources") with a card for each Konica Mino
 - Only works on the KM server under `/sc/playbooks`. Preview anywhere with `?mock=us`, `?mock=ca-en` or `?mock=ca-fr`.
 - Switches `WELCOME` / `FRENCH` in the script at the bottom of each page.
 - Google translates "Playbook" as "guide pratique"; it can be protected with `notranslate` if wanted.
+- Tested live on GitHub Pages 2026-11-17 with `?mock=ca-fr` and `?mock=us`: works. A first test seemed broken only because the browser was showing its saved copy of the old page (GitHub Pages lets browsers reuse a page for 10 minutes); a refresh or private window fixes that.
 
 ## Next step
 - FTP `index-styled.html` to the KM server and check the welcome line logged in.
