@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Google Analytics 4 (G-7807ESGLX6) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7807ESGLX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-7807ESGLX6');
+</script>
 <script>
 /* French loading screen (same look and behavior as the Accelerate playbook's js/frloading.js).
  * Covers the page while Google Translate turns it into French, then shows it once the
@@ -325,7 +333,7 @@
 
   <main class="pb-grid">
 
-    <a class="pb-card" style="--accent: #06C;" href="https://wapps.mykonicaminolta.com/sc/playbooks/accelerate_sales_playbook/" target="_blank" rel="noopener noreferrer">
+    <a class="pb-card" id="pb-accelerate" data-playbook="Accelerate" style="--accent: #06C;" href="https://wapps.mykonicaminolta.com/sc/playbooks/accelerate_sales_playbook/" target="_blank" rel="noopener noreferrer">
       <div class="pb-card-top-bar"></div>
       <div class="pb-card-thumb"><div class="pb-card-bg" style="background-image:url('https://jasonackerman1.github.io/accelerate_sales_playbook/img/accelerateHero.jpg');"></div></div>
       <div class="pb-card-content">
@@ -337,7 +345,7 @@
       </div>
     </a>
 
-    <a class="pb-card" style="--accent: #12A8B9;" href="https://wapps.mykonicaminolta.com/sc/playbooks/salesforce_playbook/" target="_blank" rel="noopener noreferrer">
+    <a class="pb-card" id="pb-salesforce" data-playbook="Salesforce" style="--accent: #12A8B9;" href="https://wapps.mykonicaminolta.com/sc/playbooks/salesforce_playbook/" target="_blank" rel="noopener noreferrer">
       <div class="pb-card-top-bar"></div>
       <div class="pb-card-thumb"><div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/Salesforce_Playbook_Images/AdobeStock_258669413.jpeg');"></div></div>
       <div class="pb-card-content">
@@ -349,7 +357,7 @@
       </div>
     </a>
 
-    <a class="pb-card" style="--accent: #27A347;" href="https://wapps.mykonicaminolta.com/sc/playbooks/Healthcare_Vertical_PlayBook/Healthcare_Playbook/" target="_blank" rel="noopener noreferrer">
+    <a class="pb-card" id="pb-healthcare" data-playbook="Healthcare" style="--accent: #27A347;" href="https://wapps.mykonicaminolta.com/sc/playbooks/Healthcare_Vertical_PlayBook/Healthcare_Playbook/" target="_blank" rel="noopener noreferrer">
       <div class="pb-card-top-bar"></div>
       <div class="pb-card-thumb"><div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/Healthcare_Playbook_Images/HealthcareHomeReduced.jpg');"></div></div>
       <div class="pb-card-content">
@@ -361,7 +369,7 @@
       </div>
     </a>
 
-    <a class="pb-card" style="--accent: #CEA100;" href="https://wapps.mykonicaminolta.com/sc/playbooks/public_sector_playbook/" target="_blank" rel="noopener noreferrer">
+    <a class="pb-card" id="pb-public-sector" data-playbook="Public Sector" style="--accent: #CEA100;" href="https://wapps.mykonicaminolta.com/sc/playbooks/public_sector_playbook/" target="_blank" rel="noopener noreferrer">
       <div class="pb-card-top-bar"></div>
       <div class="pb-card-thumb"><div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/Public_Sector_Playbook_Images/publicSectorHero3.jpg');"></div></div>
       <div class="pb-card-content">
@@ -373,7 +381,7 @@
       </div>
     </a>
 
-    <a class="pb-card" style="--accent: #662D8F;" href="https://wapps.mykonicaminolta.com/sc/playbooks/Legal_Vertical_PlayBook/" target="_blank" rel="noopener noreferrer">
+    <a class="pb-card" id="pb-legal" data-playbook="Legal" style="--accent: #662D8F;" href="https://wapps.mykonicaminolta.com/sc/playbooks/Legal_Vertical_PlayBook/" target="_blank" rel="noopener noreferrer">
       <div class="pb-card-top-bar"></div>
       <div class="pb-card-thumb"><div class="pb-card-bg" style="background-image:url('https://raw.githubusercontent.com/BradleyAPierce/Legal_Images_Copy/main/AdobeStock_206742088.jpeg');"></div></div>
       <div class="pb-card-content">
@@ -385,7 +393,8 @@
       </div>
     </a>
 
-    <a class="pb-card" style="--accent: #C0167B;" href="https://wapps.mykonicaminolta.com/sc/playbooks/GC_IP_Sales_Playbook/GC_IP_Playbook/" target="_blank" rel="noopener noreferrer">
+    <!-- ON HOLD: GC/IP Playbook card hidden (content is out of date). Remove this comment wrapper to restore.
+    <a class="pb-card" id="pb-gcip" data-playbook="GC/IP" style="--accent: #C0167B;" href="https://wapps.mykonicaminolta.com/sc/playbooks/GC_IP_Sales_Playbook/GC_IP_Playbook/" target="_blank" rel="noopener noreferrer">
       <div class="pb-card-top-bar"></div>
       <div class="pb-card-thumb"><div class="pb-card-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/BradleyAPierce/GCIP_Playbook_Images/Banner_Home_Page.jpg');"></div></div>
       <div class="pb-card-content">
@@ -396,6 +405,7 @@
         <span class="pb-card-cta">See the Portfolio <i class="fas fa-arrow-right"></i></span>
       </div>
     </a>
+    -->
 
   </main>
 
@@ -517,5 +527,18 @@
   })();
   </script>
 
+<script>
+/* Google Analytics: one "playbook_click" event per playbook card click, so GA shows which playbooks
+ * people open. Each card's id / data-playbook names it (e.g. "Healthcare"). New cards: add both. */
+document.querySelectorAll('a.pb-card[data-playbook]').forEach(function (card) {
+  card.addEventListener('click', function () {
+    if (typeof gtag !== 'function') return;
+    gtag('event', 'playbook_click', {
+      playbook_name: card.getAttribute('data-playbook'),
+      link_url: card.href
+    });
+  });
+});
+</script>
 </body>
 </html>
